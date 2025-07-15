@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="276.0" prefWidth="442.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.edu.ifsc.fln.controller.FXMLAnchorPaneCadastroServicoDialogController">
+    <children>
+        <GridPane layoutX="34.0" layoutY="37.0" prefHeight="159.0" prefWidth="373.0">
+            <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="190.20001220703125" minWidth="10.0" prefWidth="101.4000244140625" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="315.0" minWidth="10.0" prefWidth="288.5999755859375" />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            </rowConstraints>
+            <children>
+                <Label alignment="CENTER_RIGHT" prefHeight="18.0" prefWidth="102.0" text="Descrição">
+                    <opaqueInsets>
+                        <Insets />
+                    </opaqueInsets>
+                </Label>
+                <TextField fx:id="tfDescricao" prefHeight="11.0" prefWidth="281.0" GridPane.columnIndex="1" />
+                <Label alignment="CENTER_RIGHT" prefHeight="18.0" prefWidth="102.0" text="Valor" GridPane.rowIndex="1">
+                    <opaqueInsets>
+                        <Insets />
+                    </opaqueInsets>
+                </Label>
+                <Label alignment="CENTER_RIGHT" prefHeight="18.0" prefWidth="102.0" text="Pontos" GridPane.rowIndex="2">
+                    <opaqueInsets>
+                        <Insets />
+                    </opaqueInsets>
+                </Label>
+                <Label alignment="CENTER_RIGHT" prefHeight="18.0" prefWidth="102.0" text="Categoria" GridPane.rowIndex="3">
+                    <opaqueInsets>
+                        <Insets />
+                    </opaqueInsets>
+                </Label>
+                <TextField fx:id="tfValor" prefHeight="11.0" prefWidth="281.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                <TextField fx:id="tfPontos" prefHeight="11.0" prefWidth="281.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                <ChoiceBox fx:id="cbCategoria" prefHeight="25.0" prefWidth="284.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            </children>
+        </GridPane>
+        <Group layoutX="126.0" layoutY="90.0" AnchorPane.bottomAnchor="20.0" AnchorPane.rightAnchor="20.0">
+            <children>
+                <Button fx:id="btConfirmar" defaultButton="true" mnemonicParsing="false" onAction="#handleBtConfirmar" prefHeight="25.0" prefWidth="70.0" text="Confirmar" />
+                <Button fx:id="btCancelar" cancelButton="true" layoutX="83.0" mnemonicParsing="false" onAction="#handleBtCancelar" prefHeight="25.0" prefWidth="69.0" text="Cancelar" />
+            </children>
+        </Group>
+    </children>
+</AnchorPane>
