@@ -100,7 +100,6 @@ public class ModeloDAO {
 
     private Modelo populateVO(ResultSet rs) throws SQLException {
         Modelo modelo = new Modelo();
-        //produto.setCategoria(categoria);
 
         modelo.setId(rs.getInt("id"));
         modelo.setDescricao(rs.getString("descricao"));
@@ -127,6 +126,15 @@ public class ModeloDAO {
             ResultSet resultado = stmt.executeQuery();
             if (resultado.next()) {
                 modelo.setDescricao(resultado.getString("descricao"));
+                modelo.setCategoria(ECategoria.valueOf(resultado.getString("eCategoria")));
+                Marca marca = new Marca();
+                marca.setId(resultado.getInt("id_marca"));
+                MarcaDAO marcaDAO = new MarcaDAO();
+                marcaDAO.setConnection(connection);
+                marca = marcaDAO.buscar(marca);
+                modelo.setMarca(marca);
+
+
                 retorno = modelo;
             }
         } catch (SQLException ex) {

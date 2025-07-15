@@ -7,6 +7,21 @@ public class Modelo {
     private Motor motor = new Motor();
     private Marca marca;
 
+    public Modelo() {
+    }
+
+    public Modelo(String descricao, Marca marca){
+        this.descricao = descricao;
+        this.marca = marca;
+    }
+
+    public Modelo(int id, String descricao, Marca marca, ECategoria categoria) {
+        this.id = id;
+        this.descricao = descricao;
+        this.marca = marca;
+        this.categoria = categoria;
+    }
+
     public int getId() {
         return id;
     }

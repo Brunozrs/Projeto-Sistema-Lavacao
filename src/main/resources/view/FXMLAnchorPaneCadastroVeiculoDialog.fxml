@@ -1,16 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ChoiceBox?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.edu.ifsc.fln.controller.FXMLAnchorPaneCadastroVeiculoDialogController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.edu.ifsc.fln.controller.FXMLAnchorPaneCadastroVeiculoDialogController">
    <children>
       <Label layoutX="276.0" layoutY="23.0" text="Veiculo">
          <font>
@@ -27,6 +21,7 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
             <ChoiceBox fx:id="cbModelo" prefHeight="25.0" prefWidth="420.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
@@ -37,9 +32,11 @@
             <TextField fx:id="tfPlaca" GridPane.columnIndex="1" />
             <ChoiceBox fx:id="cbCor" prefHeight="25.0" prefWidth="420.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
             <Label prefHeight="17.0" prefWidth="251.0" text="              Cor:" GridPane.rowIndex="2" />
+            <Label prefHeight="17.0" prefWidth="75.0" text="        Cliente:" GridPane.rowIndex="4" />
+            <ChoiceBox fx:id="cbCliente" prefHeight="25.0" prefWidth="511.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
          </children>
       </GridPane>
-       <Button fx:id="btConfirmar" layoutX="424.0" layoutY="362.0" mnemonicParsing="false" onAction="#handleBtConfirmar" text="Confirmar" />
-       <Button fx:id="btCancelar" layoutX="507.0" layoutY="362.0" mnemonicParsing="false" onAction="#handleBtCancelar" text="Cancelar" />
+       <Button fx:id="btConfirmar" defaultButton="true" layoutX="424.0" layoutY="362.0" mnemonicParsing="false" onAction="#handleBtConfirmar" text="Confirmar" />
+       <Button fx:id="btCancelar" cancelButton="true" layoutX="507.0" layoutY="362.0" mnemonicParsing="false" onAction="#handleBtCancelar" text="Cancelar" />
    </children>
 </AnchorPane>

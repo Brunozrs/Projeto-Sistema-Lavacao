@@ -31,30 +31,31 @@ public class ClienteDAO {
     }
 
     public boolean inserir(Cliente cliente) {
-        String sql = "INSERT INTO cliente(nome, celular,email, dataCadastro) VALUES(?, ?, ?, ?)";
-        String sqlPF = "INSERT INTO pessoaFisica(id_cliente,cpf,dataNascimento) VALUES(?, ?, ?)";
-        String sqlPJ = "INSERT INTO pessoaJuridica(id_cliente,cnpj,inscricaoEstadual) VALUES(?, ?, ?)";
+        String sql = "INSERT INTO cliente(nome, celular,  email, data_cadastro) VALUES(?,?,?,?)";
+        String sqlPS = "INSERT INTO pessoa_fisica(id_cliente, cpf, data_nascimento) VALUES((SELECT max(id) FROM cliente),?,?)";
+        String sqlPJ = "INSERT INTO pessoa_juridica(id_cliente, cnpj, inscricao_estadual) VALUES((SELECT max(id) FROM cliente),?,?)";
         try {
+            //armazena os dados da superclasse
             PreparedStatement stmt = connection.prepareStatement(sql);
+            connection.setAutoCommit(false);
             stmt.setString(1, cliente.getNome());
             stmt.setString(2, cliente.getCelular());
             stmt.setString(3, cliente.getEmail());
-            stmt.setDate(4, cliente.getDataCadastro());
+            stmt.setDate(4, Date.valueOf(cliente.getDataCadastro()));
             stmt.execute();
-
+            //armazena os dados da subclasse
             if (cliente instanceof PessoaFisica) {
-                stmt = connection.prepareStatement(sqlPF);
-                stmt.setString(2, ((PessoaFisica) cliente).getCpf());
-                stmt.setDate(3, ((PessoaFisica) cliente).getDataNascimento());
+                stmt = connection.prepareStatement(sqlPS);
+                stmt.setString(1, ((PessoaFisica)cliente).getCpf());
+                stmt.setString(2, ((PessoaFisica)cliente).getDataNascimento());
                 stmt.execute();
             } else {
                 stmt = connection.prepareStatement(sqlPJ);
-                stmt.setString(2, ((PessoaJuridica) cliente).getCnpj());
-                stmt.setString(3, ((PessoaJuridica) cliente).getInscricaoEstadual());
+                stmt.setString(1, ((PessoaJuridica)cliente).getCnpj());
+                stmt.setString(2, ((PessoaJuridica)cliente).getInscricaoEstadual());
                 stmt.execute();
             }
             connection.commit();
-
             return true;
         } catch (SQLException ex) {
             Logger.getLogger(ClienteDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -88,7 +89,7 @@ public class ClienteDAO {
                 if (cliente instanceof PessoaFisica) {
                     stmt = connection.prepareStatement(sqlPF);
                     stmt.setString(1, ((PessoaFisica)cliente).getCpf());
-                    stmt.setDate(2, ((PessoaFisica)cliente).getDataNascimento());
+                    stmt.setString(2, ((PessoaFisica)cliente).getDataNascimento());
                     stmt.setInt(3, cliente.getId());
                     stmt.execute();
                 } else {
@@ -122,7 +123,9 @@ public class ClienteDAO {
     }
 
     public List<Cliente> listar() {
-        String sql = "SELECT * FROM cliente";
+        String sql = "SELECT * FROM cliente c "
+                + "LEFT JOIN pessoa_fisica pf on pf.id_cliente = c.id "
+                + "LEFT JOIN pessoa_juridica pj on pj.id_cliente = c.id;";
         List<Cliente> retorno = new ArrayList<>();
         try {
             PreparedStatement stmt = connection.prepareStatement(sql);
@@ -139,8 +142,8 @@ public class ClienteDAO {
 
     public Cliente buscar(Cliente cliente) {
         String sql = "SELECT * FROM cliente c "
-                + "LEFT JOIN pessoaFisica pf on pf.id_cliente = c.id "
-                + "LEFT JOIN pessoaJuridica pj on pj.id_cliente = c.id WHERE id=?";
+                + "LEFT JOIN pessoa_fisica pf on pf.id_cliente = c.id "
+                + "LEFT JOIN pessoa_juridica pj on pj.id_cliente = c.id WHERE id=?;";
         Cliente retorno = null;
         try {
             PreparedStatement stmt = connection.prepareStatement(sql);
@@ -154,28 +157,44 @@ public class ClienteDAO {
         }
         return retorno;
     }
+
+    public Cliente buscar(int id) {
+        String sql = "SELECT * FROM cliente c "
+                + "LEFT JOIN pessoa_fisica pf on pf.id_cliente = c.id "
+                + "LEFT JOIN pessoa_juridica pj on pj.id_cliente = c.id WHERE id=?;";
+        Cliente retorno = null;
+        try {
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setInt(1, id);
+            ResultSet resultado = stmt.executeQuery();
+            if (resultado.next()) {
+                retorno = populateVO(resultado);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ClienteDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return retorno;
+    }
     
     private Cliente populateVO(ResultSet rs) throws SQLException {
-        Cliente cliente = null;
-
-        if (rs.getString("cpf") == null || rs.getString("cpf").length() <= 0) {
+        Cliente cliente;
+        if (rs.getString("cnpj") == null || rs.getString("cnpj").length() <= 0) {
             //é um fornecedor nacional
-            PessoaFisica Cliente = new PessoaFisica();
-            ((PessoaFisica)Cliente).setCpf(rs.getString("cpf"));
-            ((PessoaFisica)Cliente).setDataNascimento(rs.getDate("dataNascimento"));
-            cliente = Cliente;
-        } else if (rs.getString("cnpj") == null || rs.getString("cnpj").length() <= 0) {
-       //é um fornecedor internacional
-            PessoaJuridica Cliente = new PessoaJuridica();
-            (Cliente).setCnpj(rs.getString("cnpj"));
-            (Cliente).setInscricaoEstadual(rs.getString("inscricaoEstadual"));
-            cliente = Cliente;
+            cliente = new PessoaFisica();
+            ((PessoaFisica)cliente).setCpf(rs.getString("cpf"));
+            ((PessoaFisica)cliente).setDataNascimento(rs.getString("data_nascimento"));
+        } else {
+            //é um fornecedor internacional
+            cliente = new PessoaJuridica();
+            ((PessoaJuridica)cliente).setCnpj(rs.getString("cnpj"));
+            ((PessoaJuridica)cliente).setInscricaoEstadual(rs.getString("inscricao_estadual"));
         }
         cliente.setId(rs.getInt("id"));
         cliente.setNome(rs.getString("nome"));
         cliente.setCelular(rs.getString("celular"));
         cliente.setEmail(rs.getString("email"));
-        cliente.setDataCadastro(rs.getDate("dataCadastro"));
+        cliente.setDataCadastro(rs.getDate("data_cadastro").toLocalDate());
         return cliente;
     }
+
 }

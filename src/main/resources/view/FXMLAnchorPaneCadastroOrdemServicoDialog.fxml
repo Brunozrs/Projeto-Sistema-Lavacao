@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.ContextMenu?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="532.0" prefWidth="574.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.edu.ifsc.fln.controller.FXMLAnchorPaneCadastroOrdemServicoDialogController">
+   <children>
+      <Label layoutX="16.0" layoutY="25.0" text="Veículo(Placa):" />
+      <Label layoutX="51.0" layoutY="189.0" text="Serviço:" />
+      <Label layoutX="40.0" layoutY="120.0" text="Categoria:" />
+      <Label layoutX="50.0" layoutY="87.0" text="Modelo:" />
+      <Label layoutX="52.0" layoutY="457.0" text="Status:" />
+      <Label layoutX="53.0" layoutY="57.0" text="Cliente:" />
+      <Label layoutX="18.0" layoutY="390.0" text="Desconto (%):" />
+      <Label layoutX="60.0" layoutY="292.0" text="Items:" />
+      <Label layoutX="54.0" layoutY="421.0" text="Valor:" />
+      <Button fx:id="btPesquisarDados" layoutX="420.0" layoutY="21.0" mnemonicParsing="false" onAction="#handleBtPesquisarDados" text="Pesquisar Dados" />
+      <TextField fx:id="tfCliente" disable="true" layoutX="98.0" layoutY="53.0" prefHeight="25.0" prefWidth="425.0" />
+      <TextField fx:id="tfModelo" disable="true" layoutX="98.0" layoutY="83.0" prefHeight="25.0" prefWidth="236.0" />
+      <Label layoutX="340.0" layoutY="87.0" text="Marca:" />
+      <TextField fx:id="tfMarca" disable="true" editable="false" layoutX="383.0" layoutY="83.0" prefHeight="25.0" prefWidth="140.0" />
+      <Label layoutX="66.0" layoutY="159.0" text="Data:" />
+      <DatePicker fx:id="dpData" layoutX="99.0" layoutY="155.0" prefHeight="25.0" prefWidth="425.0" />
+      <TextField fx:id="tfCategoria" disable="true" editable="false" layoutX="98.0" layoutY="116.0" prefHeight="25.0" prefWidth="425.0" />
+      <TableView fx:id="tableViewItemsOS" layoutX="98.0" layoutY="216.0" onMouseClicked="#handleTableViewMouseClicked" prefHeight="168.0" prefWidth="425.0">
+        <columns>
+          <TableColumn fx:id="tableColumnServico" prefWidth="117.0" text="Serviço" />
+          <TableColumn fx:id="tableColumnObservacoesServico" prefWidth="208.0" text="Observações" />
+            <TableColumn fx:id="tableColumnValorServico" prefWidth="99.0" text="Valor" />
+        </columns>
+         <contextMenu>
+            <ContextMenu fx:id="contextMenuTableView" onAction="#excluirItemSelecionado">
+              <items>
+                <MenuItem fx:id="contextMenuItemRemoverItem" mnemonicParsing="false" text="Excluir" />
+              </items>
+            </ContextMenu>
+         </contextMenu>
+      </TableView>
+      <TextField fx:id="tfDesconto" layoutX="98.0" layoutY="386.0" prefHeight="25.0" prefWidth="425.0" />
+      <TextField fx:id="tfValor" layoutX="99.0" layoutY="417.0" prefHeight="25.0" prefWidth="425.0" />
+      <ChoiceBox fx:id="cbStatus" layoutX="98.0" layoutY="453.0" prefHeight="25.0" prefWidth="425.0" />
+      <TextField fx:id="tfValorServico" layoutX="234.0" layoutY="185.0" prefHeight="25.0" prefWidth="97.0" promptText="R$:" />
+      <TextField fx:id="tfObservacoesServico" layoutX="337.0" layoutY="185.0" prefHeight="25.0" prefWidth="104.0" promptText="Obs:" />
+      <Button fx:id="btAdicionar" layoutX="450.0" layoutY="185.0" mnemonicParsing="false" onAction="#handleBtAdicionar" prefHeight="25.0" prefWidth="74.0" text="Adicionar" />
+      <Button fx:id="btConfirmar" layoutX="380.0" layoutY="493.0" mnemonicParsing="false" onAction="#handleBtConfirmar" text="Confirmar" />
+      <Button fx:id="btCancelar" layoutX="460.0" layoutY="493.0" mnemonicParsing="false" onAction="#handleBtCancelar" text="Cancelar" />
+      <ComboBox fx:id="cbVeiculo" layoutX="99.0" layoutY="21.0" prefHeight="25.0" prefWidth="314.0" />
+      <ComboBox fx:id="cbServico" layoutX="99.0" layoutY="185.0" prefHeight="25.0" prefWidth="127.0" />
+   </children>
+</AnchorPane>

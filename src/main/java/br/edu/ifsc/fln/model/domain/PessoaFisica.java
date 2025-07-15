@@ -1,11 +1,24 @@
 package br.edu.ifsc.fln.model.domain;
 
 import java.sql.Date;
+import java.time.LocalDate;
 
 public class PessoaFisica extends Cliente {
     private String cpf;
-    private Date dataNascimento;
+    private String dataNascimento;
 
+    public PessoaFisica() {}
+
+    public PessoaFisica(String cpf, String dataNascimento) {
+        this.cpf = cpf;
+        this.dataNascimento = dataNascimento;
+    }
+
+    public PessoaFisica(String cpf, String dataNascimento, int id, String nome, String celular, String emial, LocalDate dataCadastro) {
+        super(id, nome, celular, emial, dataCadastro);
+        this.cpf = cpf;
+        this.dataNascimento = dataNascimento;
+    }
 
     /**@Override
     public String getdados(){
@@ -34,14 +47,14 @@ public class PessoaFisica extends Cliente {
     /**
      * @return the dataNascimento
      */
-    public Date getDataNascimento() {
+    public String getDataNascimento() {
         return dataNascimento;
     }
 
     /**
      * @param dataNascimento the dataNascimento to set
      */
-    public void setDataNascimento(Date dataNascimento) {
+    public void setDataNascimento(String dataNascimento) {
         this.dataNascimento = dataNascimento;
     }
 

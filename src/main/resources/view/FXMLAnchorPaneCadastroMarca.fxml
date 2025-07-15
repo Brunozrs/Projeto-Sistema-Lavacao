@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="394.0" prefWidth="598.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.edu.ifsc.fln.controller.FXMLAnchorPaneCadastroMarcaController">
+<AnchorPane prefHeight="680.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.edu.ifsc.fln.controller.FXMLAnchorPaneCadastroMarcaController">
    <children>
       <SplitPane dividerPositions="0.42474916387959866" layoutY="400.0" prefHeight="600.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <items>
@@ -24,15 +24,15 @@
           </AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                <children>
-                  <Label layoutX="99.0" layoutY="14.0" text="Detalhes da Marca">
+                  <Label layoutX="196.0" layoutY="14.0" text="Detalhes da Marca">
                      <font>
                         <Font name="System Bold" size="14.0" />
                      </font>
                   </Label>
-                  <GridPane layoutX="39.0" layoutY="59.0" prefHeight="62.0" prefWidth="261.0" AnchorPane.leftAnchor="40.0" AnchorPane.rightAnchor="21.599999999999966">
+                  <GridPane layoutX="39.0" layoutY="59.0" prefHeight="148.0" prefWidth="452.0" AnchorPane.leftAnchor="40.0" AnchorPane.rightAnchor="22.0">
                     <columnConstraints>
-                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="94.4000244140625" minWidth="3.200000000000003" prefWidth="76.80001220703124" />
-                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="226.40000000000003" minWidth="10.0" prefWidth="183.99998779296877" />
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="315.0" minWidth="0.0" prefWidth="0.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="322.0" minWidth="7.0" prefWidth="322.0" />
                     </columnConstraints>
                     <rowConstraints>
                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -49,12 +49,12 @@
                                  <Insets right="5.0" />
                              </GridPane.margin>
                          </Label>
-                         <Label fx:id="lbMarcaId" prefHeight="18.0" prefWidth="184.0" GridPane.columnIndex="1">
+                         <Label fx:id="lbMarcaId" prefHeight="18.0" prefWidth="414.0" GridPane.columnIndex="1">
                              <GridPane.margin>
                                  <Insets left="5.0" />
                              </GridPane.margin>
                          </Label>
-                         <Label fx:id="lbMarcaNome" prefHeight="18.0" prefWidth="186.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                         <Label fx:id="lbMarcaNome" prefHeight="18.0" prefWidth="283.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                              <GridPane.margin>
                                  <Insets left="5.0" />
                              </GridPane.margin>

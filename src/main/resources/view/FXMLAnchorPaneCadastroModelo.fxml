@@ -5,27 +5,27 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="391.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.edu.ifsc.fln.controller.FXMLAnchorPaneCadastroModeloController">
+<AnchorPane prefHeight="680.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.edu.ifsc.fln.controller.FXMLAnchorPaneCadastroModeloController">
    <children>
-      <SplitPane dividerPositions="0.29797979797979796" prefHeight="400.0" prefWidth="600.0">
+      <SplitPane dividerPositions="0.29797979797979796" prefHeight="680.0" prefWidth="900.0">
         <items>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="405.0" prefWidth="175.0">
                <children>
-                  <TableView fx:id="tableViewModelos" layoutY="-1.0" prefHeight="392.0" prefWidth="175.0">
+                  <TableView fx:id="tableViewModelos" layoutY="-1.0" prefHeight="678.0" prefWidth="265.0">
                     <columns>
-                      <TableColumn fx:id="tableColumnDescricao" prefWidth="174.0" text="Modelo" />
+                      <TableColumn fx:id="tableColumnDescricao" prefWidth="264.0" text="Modelo" />
                     </columns>
                   </TableView>
                </children>
             </AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="399.0" prefWidth="423.0">
                <children>
-                  <Separator layoutY="-20.0" prefHeight="400.0" prefWidth="417.0" />
-                  <Label layoutX="132.0" layoutY="13.0" prefHeight="17.0" prefWidth="169.0" text="Detalhes do Modelo" textAlignment="JUSTIFY">
+                  <Separator layoutY="-20.0" prefHeight="701.0" prefWidth="627.0" />
+                  <Label layoutX="229.0" layoutY="26.0" prefHeight="17.0" prefWidth="169.0" text="Detalhes do Modelo" textAlignment="JUSTIFY">
                      <font>
                         <Font name="System Bold" size="14.0" />
                      </font></Label>
-                  <GridPane layoutX="61.0" layoutY="36.0" prefHeight="112.0" prefWidth="289.0">
+                  <GridPane layoutX="146.0" layoutY="62.0" prefHeight="221.0" prefWidth="340.0">
                     <columnConstraints>
                       <ColumnConstraints hgrow="SOMETIMES" maxWidth="140.0" minWidth="10.0" prefWidth="103.0" />
                       <ColumnConstraints hgrow="SOMETIMES" maxWidth="186.0" minWidth="10.0" prefWidth="186.0" />
@@ -47,7 +47,7 @@
                         <Label fx:id="lbModeloMarca" layoutX="155.0" layoutY="68.0" prefHeight="17.0" prefWidth="170.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                      </children>
                   </GridPane>
-                  <GridPane layoutX="55.0" layoutY="230.0" prefHeight="80.0" prefWidth="264.0">
+                  <GridPane layoutX="159.0" layoutY="402.0" prefHeight="144.0" prefWidth="274.0">
                     <columnConstraints>
                       <ColumnConstraints hgrow="SOMETIMES" maxWidth="152.0" minWidth="10.0" prefWidth="116.0" />
                       <ColumnConstraints hgrow="SOMETIMES" maxWidth="121.0" minWidth="10.0" prefWidth="121.0" />
@@ -63,7 +63,7 @@
                         <Label fx:id="lbMotorTC" layoutX="126.0" layoutY="18.0" prefHeight="17.0" prefWidth="129.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                      </children>
                   </GridPane>
-                  <Label layoutX="121.0" layoutY="205.0" prefHeight="17.0" prefWidth="169.0" text="Detalhes do Motor" textAlignment="JUSTIFY">
+                  <Label layoutX="206.0" layoutY="366.0" prefHeight="17.0" prefWidth="169.0" text="Detalhes do Motor" textAlignment="JUSTIFY">
                      <font>
                         <Font name="System Bold" size="14.0" />
                      </font>

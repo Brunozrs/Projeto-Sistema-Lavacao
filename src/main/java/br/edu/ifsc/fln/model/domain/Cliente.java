@@ -4,7 +4,8 @@
  */
 package br.edu.ifsc.fln.model.domain;
 
-//import Exceptions.ExceptionLavacao;
+//import DAOExceptions.ExceptionLavacao;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.sql.Date;
 
@@ -17,7 +18,7 @@ public abstract class Cliente {
     protected String nome;
     protected String celular;
     protected String email;
-    protected Date dataCadastro;
+    protected LocalDate dataCadastro;
     //private Pontuacao pontuacao = new Pontuacao();
 
 
@@ -28,11 +29,7 @@ public abstract class Cliente {
     }
 
 
-    public void Cliente() {
-
-    }
-
-    public Cliente(int id, String nome, String celular, String email, Date dataCadastro) {
+    public Cliente(int id, String nome, String celular, String email, LocalDate dataCadastro) {
         this.id = id;
         this.nome = nome;
         this.celular = celular;
@@ -41,7 +38,7 @@ public abstract class Cliente {
         // this.pontuacao.setQuantidade(0);
     }
 
-    public Cliente(String nome, String celular, String email, Date dataCadastro) {
+    public Cliente(String nome, String celular, String email, LocalDate dataCadastro) {
         this.nome = nome;
         this.celular = celular;
         this.email = email;
@@ -109,14 +106,14 @@ public abstract class Cliente {
     /**
      * @return the dataCadastro
      */
-    public Date getDataCadastro() {
+    public LocalDate getDataCadastro() {
         return dataCadastro;
     }
 
     /**
      * @param dataCadastro the dataCadastro to set
      */
-    public void setDataCadastro(Date dataCadastro) {
+    public void setDataCadastro(LocalDate dataCadastro) {
         this.dataCadastro = dataCadastro;
     }
 
@@ -143,4 +140,7 @@ public abstract class Cliente {
 
         }
     }
-}
+
+    @Override
+    public String toString() {return nome;}
+    }
