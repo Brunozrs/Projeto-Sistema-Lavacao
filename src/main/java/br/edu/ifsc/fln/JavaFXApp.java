@@ -27,8 +27,8 @@ public class JavaFXApp extends Application {
 
         Scene scene = new Scene(root, 900, 700);
 
-        primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/icon/IFSC_logo_vertical.png")));
-        primaryStage.setTitle("Sistema de Lavação do IFSC Florianópolis");
+        primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/icon/Lavação.jpeg")));
+        primaryStage.setTitle("Lavação V Rossi");
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
         primaryStage.show();

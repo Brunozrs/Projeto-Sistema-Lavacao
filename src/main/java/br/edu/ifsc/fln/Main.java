@@ -4,6 +4,8 @@
  */
 package br.edu.ifsc.fln;
 
+import br.edu.ifsc.fln.model.domain.Cor;
+
 /**
  *
  * @author mpisc

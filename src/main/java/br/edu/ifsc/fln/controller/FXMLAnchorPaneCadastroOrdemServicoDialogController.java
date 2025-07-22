@@ -19,6 +19,7 @@ import javafx.stage.Stage;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
@@ -119,7 +120,7 @@ public class FXMLAnchorPaneCadastroOrdemServicoDialogController implements Initi
     private Stage dialogStage;
     private boolean buttonConfirmarClicked = false;
     private OrdemServico ordemServico;
-    private Veiculo veiculo;
+
 
     /**
      * Initializes the controller class.
@@ -241,7 +242,8 @@ public class FXMLAnchorPaneCadastroOrdemServicoDialogController implements Initi
     }
 
     @FXML
-    void handleBtPesquisarDados(){
+    void handleBtPesquisarDados() {
+
         if(cbVeiculo != null){
             tfCliente.setText(cbVeiculo.getSelectionModel().getSelectedItem().getCliente().getNome());
             tfModelo.setText(cbVeiculo.getSelectionModel().getSelectedItem().getModelo().getDescricao());
@@ -273,7 +275,10 @@ public class FXMLAnchorPaneCadastroOrdemServicoDialogController implements Initi
             listaItemOS.add(itemOS);
             this.ordemServico.setItemOS(listaItemOS);
 
-            observableListItemsOS.add(itemOS);
+            observableListItemsOS= FXCollections.observableArrayList(this.ordemServico.getItemOS());
+            tableViewItemsOS.setItems(observableListItemsOS);
+
+
 
             ordemServico.calcularServico();
             tfValor.setText(String.format("%.2f", ordemServico.getTotal()));

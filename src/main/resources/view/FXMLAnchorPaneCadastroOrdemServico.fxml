@@ -69,6 +69,7 @@
                            <Button fx:id="btExcluir" layoutX="142.0" mnemonicParsing="false" onAction="#handleBtExcluir" prefHeight="26.0" prefWidth="63.0" text="Excluir" />
                        </children>
                    </Group>
+                  <Button fx:id="buttonImprimir" layoutX="261.0" layoutY="471.0" mnemonicParsing="false" onAction="#handlebuttonImprimir" prefHeight="25.0" prefWidth="63.0" text="Imprimir" />
                </children></AnchorPane>
         </items>
       </SplitPane>

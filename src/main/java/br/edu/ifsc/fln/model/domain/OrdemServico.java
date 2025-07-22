@@ -1,5 +1,8 @@
 package br.edu.ifsc.fln.model.domain;
 
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +15,7 @@ public class OrdemServico {
     private double desconto;
 
     private EStatus status = EStatus.ABERTA;
+    private ObjectProperty<EStatus> Status = new SimpleObjectProperty<>();
     private Veiculo veiculo;
     private List<ItemOS> itemOS = new ArrayList<>();
 
@@ -76,6 +80,21 @@ public class OrdemServico {
 
     public void setItemOS(List<ItemOS> itemOS) {
         this.itemOS = itemOS;
+    }
+
+    // Getter for the property
+    public EStatus getstatus() {
+        return Status.get();
+    }
+
+    // Setter
+    public void setstatus(EStatus status) {
+        this.Status.set(status);
+    }
+
+    // Property accessor
+    public ObjectProperty<EStatus> statusProperty() {
+        return Status;
     }
 
     // Metodos

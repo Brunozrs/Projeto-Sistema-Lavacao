@@ -21,16 +21,21 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.view.JasperViewer;
 
+import javax.swing.*;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 
 
 /**
@@ -68,6 +73,9 @@ public class FXMLAnchorPaneCadastroOrdemServicoController implements Initializab
     private Label lbVeiculo;
 
     @FXML
+    private Button buttonImprimir;
+
+    @FXML
     private TableColumn<OrdemServico, String> tableColumnNumeroDaOrdem;
 
     @FXML
@@ -101,8 +109,6 @@ public class FXMLAnchorPaneCadastroOrdemServicoController implements Initializab
     }
 
     public void carregarTableView() {
-        DateTimeFormatter myDateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-
         tableColumnNumeroDaOrdem.setCellValueFactory(new PropertyValueFactory<>("numero"));
         tableColumnVeiculoDaOrdem.setCellValueFactory(new PropertyValueFactory<>("veiculo"));
         tableColumnTotalDaOrdem.setCellValueFactory(new PropertyValueFactory<>("total"));
@@ -198,6 +204,54 @@ public class FXMLAnchorPaneCadastroOrdemServicoController implements Initializab
 
         return controller.isBtConfirmarClicked();
     }
+
+    @FXML
+    private void handlebuttonImprimir(ActionEvent event) {
+        Long selected = tableViewOrdemDeServico.getSelectionModel().getSelectedItem().getNumero();
+
+        if (selected == null) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Nenhuma seleção");
+            alert.setHeaderText(null);
+            alert.setContentText("Por favor, selecione uma ordem de serviço na tabela");
+            alert.showAndWait();
+            return;
+        }
+
+        try {
+            // 1. Load compiled report
+            InputStream jasperStream = getClass().getResourceAsStream("/report/CupomFiscal.jasper");
+
+            // 2. Create parameters map
+            Map<String, Object> params = new HashMap<>();
+            params.put("numero_os", selected); // Pass selected order number
+
+            // 3. Get database connection
+            try (Connection conn = DatabaseFactory.getDatabase("mysql").conectar()) {
+
+                // 4. Fill report
+                JasperPrint print = JasperFillManager.fillReport(jasperStream, params, conn);
+
+                // 5. Show print preview
+                JasperViewer viewer = new JasperViewer(print, false);
+                viewer.setTitle("Ordem de Serviço #" + selected);
+                viewer.setVisible(true);
+
+                // OR direct printing without preview:
+                // JasperPrintManager.printReport(print, true);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erro de impressão");
+            alert.setHeaderText(null);
+            alert.setContentText("Erro ao gerar relatório: " + e.getMessage());
+            alert.showAndWait();
+        }
+    }
+
+
+
 
 
 }

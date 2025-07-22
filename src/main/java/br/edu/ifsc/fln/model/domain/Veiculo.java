@@ -7,7 +7,8 @@ public class Veiculo {
     private Modelo modelo;
     private Cor cor;
     private Cliente cliente;
-    //private OrdemServico ordemServico;
+    private OrdemServico ordemServico;
+
 
 
     public Veiculo(){
@@ -70,13 +71,13 @@ public class Veiculo {
         this.cliente = cliente;
     }
 
-   // public OrdemServico getOrdemServico() {
-   //     return ordemServico;
-   // }
+   public OrdemServico getOrdemServico() {
+        return ordemServico;
+    }
 
-    //public void setOrdemServico(OrdemServico ordemServico) {
-   //     this.ordemServico = ordemServico;
-   // }
+    public void setOrdemServico(OrdemServico ordemServico) {
+        this.ordemServico = ordemServico;
+    }
 
     @Override
     public String toString() {

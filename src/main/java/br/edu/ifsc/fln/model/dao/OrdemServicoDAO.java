@@ -2,12 +2,14 @@ package br.edu.ifsc.fln.model.dao;
 
 
 import br.edu.ifsc.fln.model.domain.*;
+import javafx.collections.FXCollections;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.Date;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public class OrdemServicoDAO {
 
@@ -91,6 +93,7 @@ public class OrdemServicoDAO {
             // Alterar o getItemOS para getItensOS e o mesmo para o atributo
             for (ItemOS ios : ordemServico.getItemOS()) {
                 itemOSDAO.inserir(ios);
+
             }
             connection.commit();
             return true;
@@ -154,7 +157,7 @@ public class OrdemServicoDAO {
                 ordemServico.setTotal(resultado.getDouble("total"));
                 ordemServico.setAgenda(resultado.getDate("agenda").toLocalDate());
                 ordemServico.setDesconto(resultado.getDouble("desconto"));
-                ordemServico.setStatus(Enum.valueOf(EStatus.class, resultado.getString("situacao")));
+                ordemServico.setStatus(EStatus.valueOf(resultado.getString("situacao")));
                 veiculo.setId(resultado.getInt("id_veiculo"));
 
                 VeiculoDAO veiculoDAO = new VeiculoDAO();
@@ -197,27 +200,6 @@ public class OrdemServicoDAO {
         return retorno;
     }
 
-    public OrdemServico buscar(int id) {
-        String sql = "SELECT * FROM ordem_de_servico WHERE numero=?";
-        OrdemServico retorno = new OrdemServico();
-        try {
-            PreparedStatement stmt = connection.prepareStatement(sql);
-            stmt.setInt(1, id);
-            ResultSet resultado = stmt.executeQuery();
-            if (resultado.next()) {
-                Veiculo veiculo = new Veiculo();
-                retorno.setNumero(resultado.getLong("numero"));
-                retorno.setAgenda(resultado.getDate("agenda").toLocalDate());
-                retorno.setDesconto(resultado.getDouble("desconto"));
-                retorno.setStatus(Enum.valueOf(EStatus.class, resultado.getString("status")));
-                veiculo.setId(resultado.getInt("id_veiculo"));
-                retorno.setVeiculo(veiculo);
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(OrdemServicoDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return retorno;
-    }
 
     public OrdemServico buscarUltimaOrdemServico() {
         String sql = "SELECT max(numero) as max FROM ordem_de_servico";
@@ -235,5 +217,51 @@ public class OrdemServicoDAO {
             Logger.getLogger(OrdemServicoDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return retorno;
+    }
+
+    public Map<Integer, ArrayList> listarQuantidadeServicosPorMes() {
+        String sql = "select count(numero) as count, extract(year from agenda) as ano, "
+                + " extract(month from agenda) as mes from ordem_de_servico group by ano, "
+                + "mes order by ano, mes";
+        Map<Integer, ArrayList> retorno = new HashMap();
+
+        try {
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            ResultSet resultado = stmt.executeQuery();
+
+            while (resultado.next()) {
+                ArrayList linha = new ArrayList();
+                if (!retorno.containsKey(resultado.getInt("ano")))
+                {
+                    linha.add(resultado.getInt("mes"));
+                    linha.add(resultado.getInt("count"));
+                    retorno.put(resultado.getInt("ano"), linha);
+                }else{
+                    ArrayList linhaNova = retorno.get(resultado.getInt("ano"));
+                    linhaNova.add(resultado.getInt("mes"));
+                    linhaNova.add(resultado.getInt("count"));
+                }
+            }
+            if (retorno.size() > 0) {
+                retorno = ordenar(retorno);
+            }
+            return retorno;
+        } catch (SQLException ex) {
+            Logger.getLogger(OrdemServicoDAO.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+
+        }
+        return retorno;
+    }
+
+    private Map<Integer, ArrayList> ordenar(Map<Integer, ArrayList> vendas) {
+        LinkedHashMap<Integer, ArrayList> orderedMap = vendas.entrySet()
+                .stream()
+                .sorted(Map.Entry.comparingByKey())
+                .collect(Collectors.toMap(Map.Entry::getKey,
+                        Map.Entry::getValue, //
+                        (key, content) -> content, //
+                        LinkedHashMap::new));
+        return orderedMap;
     }
 }

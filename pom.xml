@@ -46,6 +46,11 @@
 
              
     <!-- TESTES -->
+        <dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports</artifactId>
+            <version>7.0.1</version>
+        </dependency>
     <!-- JUnit 5 -->   
         <dependency>
             <groupId>org.junit.jupiter</groupId>
