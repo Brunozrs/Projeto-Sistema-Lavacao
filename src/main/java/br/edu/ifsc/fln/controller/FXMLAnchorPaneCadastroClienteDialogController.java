@@ -35,11 +35,6 @@ public class FXMLAnchorPaneCadastroClienteDialogController implements Initializa
     @FXML
     private Group gbTipo;
 
-    @FXML
-    private RadioButton rbPessoaFisica;
-
-    @FXML
-    private RadioButton rbPessoaJuridica;
 
     @FXML
     private TextField tfCPFouCNPJ;
@@ -105,11 +100,9 @@ public class FXMLAnchorPaneCadastroClienteDialogController implements Initializa
             this.gbTipo.setDisable(true);
             if (cliente instanceof PessoaFisica) {
                 tfIEouDataNasc.setDisable(false);
-                rbPessoaFisica.setSelected(true);
                 tfCPFouCNPJ.setText(((PessoaFisica) this.cliente).getCpf());
                 tfIEouDataNasc.setText(((PessoaFisica) this.cliente).getDataNascimento());
             } else {
-                rbPessoaJuridica.setSelected(true);
                 tfCPFouCNPJ.setText(((PessoaJuridica) this.cliente).getCnpj());
                 tfIEouDataNasc.setText(((PessoaJuridica) this.cliente).getInscricaoEstadual());
             }
@@ -124,7 +117,7 @@ public class FXMLAnchorPaneCadastroClienteDialogController implements Initializa
             cliente.setCelular(tfCelular.getText());
             cliente.setEmail(tfEmail.getText());
             cliente.setDataCadastro(dpCadastro.getValue());
-            if (rbPessoaFisica.isSelected()) {
+            if (cliente instanceof PessoaFisica) {
                 ((PessoaFisica) cliente).setCpf(tfCPFouCNPJ.getText());
                 ((PessoaFisica) cliente).setDataNascimento(tfIEouDataNasc.getText());
             } else {
@@ -172,22 +165,6 @@ public class FXMLAnchorPaneCadastroClienteDialogController implements Initializa
             errorMessage += "Data de cadastro inválido.\n";
         }
 
-        if (rbPessoaFisica.isSelected()) {
-            if (this.tfCPFouCNPJ.getText() == null || this.tfCPFouCNPJ.getText().length() == 0) {
-                errorMessage += "CPF inválido.\n";
-            }
-
-            if (this.tfIEouDataNasc.getText() == null || this.tfIEouDataNasc.getText().length() == 0) {
-                errorMessage += "Data de nascimento inválido.\n";
-            }
-        } else {
-            if (this.tfCPFouCNPJ.getText() == null || this.tfCPFouCNPJ.getText().length() == 0) {
-                errorMessage += "CNPJ inválido.\n";
-            }
-            if (this.tfIEouDataNasc.getText() == null || this.tfIEouDataNasc.getText().length() == 0) {
-                errorMessage += "Inscrição estadual inválida.\n";
-            }
-        }
 
         if (errorMessage.length() == 0) {
             return true;

@@ -3,6 +3,7 @@ package br.edu.ifsc.fln.controller;
 import br.edu.ifsc.fln.model.dao.VeiculoDAO;
 import br.edu.ifsc.fln.model.database.Database;
 import br.edu.ifsc.fln.model.database.DatabaseFactory;
+import br.edu.ifsc.fln.model.domain.Cliente;
 import br.edu.ifsc.fln.model.domain.Veiculo;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -113,6 +114,7 @@ public class FXMLAnchorPaneCadastroVeiculoController implements Initializable {
     @FXML
     public void handleBtInserir() throws IOException {
         Veiculo veiculo = new Veiculo();
+
         boolean buttonConfirmarClicked = showFXMLAnchorPaneCadastrosVeiculosDialog(veiculo);
         if (buttonConfirmarClicked) {
             veiculo.getCliente().add(veiculo);

@@ -163,6 +163,7 @@ public class FXMLAnchorPaneCadastroVeiculoDialogController implements Initializa
             veiculo.setObservacoes(tfObservacoes.getText());
             veiculo.setCor(cbCor.getSelectionModel().getSelectedItem());
             veiculo.setModelo( cbModelo.getSelectionModel().getSelectedItem());
+            veiculo.setCliente(cbCliente.getSelectionModel().getSelectedItem());
 
             buttonConfirmarClicked = true;
             dialogStage.close();
