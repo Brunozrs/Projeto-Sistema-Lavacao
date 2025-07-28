@@ -69,6 +69,7 @@ public class ServicoDAO {
         }
     }
 
+
     public List<Servico> listar() {
         String sql = "SELECT * FROM servico";
         List<Servico> retorno = new ArrayList<>();
@@ -79,6 +80,7 @@ public class ServicoDAO {
                 Servico servico = new Servico();
                 servico.setId(resultado.getInt("id"));
                 servico.setDescricao(resultado.getString("descricao"));
+                servico.setValor(resultado.getDouble("valor"));
                 retorno.add(servico);
             }
         } catch (SQLException ex) {

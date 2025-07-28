@@ -4,6 +4,7 @@
  */
 package br.edu.ifsc.fln.model.dao;
 
+import br.edu.ifsc.fln.exception.DAOException;
 import br.edu.ifsc.fln.model.domain.Cliente;
 import br.edu.ifsc.fln.model.domain.PessoaFisica;
 import br.edu.ifsc.fln.model.domain.PessoaJuridica;
@@ -30,7 +31,7 @@ public class ClienteDAO {
         this.connection = connection;
     }
 
-    public boolean inserir(Cliente cliente) {
+    public boolean inserir(Cliente cliente) throws DAOException {
         String sql = "INSERT INTO cliente(nome, celular,  email, data_cadastro) VALUES(?,?,?,?)";
         String sqlPS = "INSERT INTO pessoa_fisica(id_cliente, cpf, data_nascimento) VALUES((SELECT max(id) FROM cliente),?,?)";
         String sqlPJ = "INSERT INTO pessoa_juridica(id_cliente, cnpj, inscricao_estadual) VALUES((SELECT max(id) FROM cliente),?,?)";
@@ -64,18 +65,18 @@ public class ClienteDAO {
                 System.out.println("rollback executado com sucesso!!!");
             } catch (SQLException e) {
                 System.out.println("falha na operação roolback...");
-                throw new RuntimeException(e);
+                throw new DAOException("Erro ao inserir cliente", e);
             }
             return false;
         } finally {
             try {
                 connection.setAutoCommit(true);
             } catch (SQLException e) {
-                throw new RuntimeException(e);
+                throw new DAOException("Erro ao fechar recursos", e);
             }
         }
     }
-        public boolean alterar (Cliente cliente) {
+        public boolean alterar (Cliente cliente) throws DAOException{
             String sql = "UPDATE cliente SET nome=?, celular=?, email=?, dataCadastro=? WHERE id=?";
             String sqlPF = "UPDATE pessoaFisica SET cpf=?, dataNacimento=?  WHERE id_cliente = ?";
             String sqlPJ = "UPDATE pessoaJuridica SET cnpj=?, inscricaoEstadual=? WHERE id_cliente = ?";
@@ -102,25 +103,57 @@ public class ClienteDAO {
                 return true;
             } catch (SQLException ex) {
                 Logger.getLogger(ClienteDAO.class.getName()).log(Level.SEVERE, null, ex);
-                return false;
+                try {
+                    if (connection != null) {
+                        connection.rollback();
+                    }
+                } catch (SQLException ez) {
+                    throw new DAOException("Falha no rollback da transação", ez);
+                }
+                throw new DAOException("Erro ao atualizar cliente", ex);
+            } finally {
+                try {
+                    if (connection != null) {
+                        connection.setAutoCommit(true);
+                    }
+                } catch (SQLException e) {
+                    throw new DAOException("Erro ao redefinir auto-commit", e);
+                }
             }
+
         }
 
 
 
 
-    public boolean remover(Cliente cliente) {
+    public boolean remover(Cliente cliente) throws DAOException{
         String sql = "DELETE FROM cliente WHERE id=?";
         try {
             PreparedStatement stmt = connection.prepareStatement(sql);
             stmt.setInt(1, cliente.getId());
             stmt.execute();
             return true;
-        } catch (SQLException ex) {
-            Logger.getLogger(ClienteDAO.class.getName()).log(Level.SEVERE, null, ex);
-            return false;
+        }  catch (SQLException e) {
+            try {
+                if (connection != null) {
+                    connection.rollback();
+                }
+            } catch (SQLException ex) {
+                throw new DAOException("Falha no rollback da transação", ex);
+            }
+            throw new DAOException("Erro ao remover cliente", e);
+        } finally {
+            try {
+                if (connection != null) {
+                    connection.setAutoCommit(true);
+                }
+            } catch (SQLException e) {
+                throw new DAOException("Erro ao redefinir auto-commit", e);
+            }
         }
     }
+
+
 
     public List<Cliente> listar() {
         String sql = "SELECT * FROM cliente c "
@@ -175,6 +208,17 @@ public class ClienteDAO {
         }
         return retorno;
     }
+
+    public boolean atualizarPontos( int clienteId, int novosPontos) throws SQLException {
+        String sql = "UPDATE cliente SET pontos = ? WHERE id = ?";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, novosPontos);
+            stmt.setInt(2, clienteId);
+
+            return stmt.executeUpdate() > 0;
+        }
+    }
     
     private Cliente populateVO(ResultSet rs) throws SQLException {
         Cliente cliente;
@@ -194,6 +238,7 @@ public class ClienteDAO {
         cliente.setCelular(rs.getString("celular"));
         cliente.setEmail(rs.getString("email"));
         cliente.setDataCadastro(rs.getDate("data_cadastro").toLocalDate());
+        cliente.setPontuacao(rs.getInt("pontos"));
         return cliente;
     }
 

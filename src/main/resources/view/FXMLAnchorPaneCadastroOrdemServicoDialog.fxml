@@ -54,6 +54,6 @@
       <Button fx:id="btConfirmar" layoutX="380.0" layoutY="493.0" mnemonicParsing="false" onAction="#handleBtConfirmar" text="Confirmar" />
       <Button fx:id="btCancelar" layoutX="460.0" layoutY="493.0" mnemonicParsing="false" onAction="#handleBtCancelar" text="Cancelar" />
       <ComboBox fx:id="cbVeiculo" layoutX="99.0" layoutY="21.0" prefHeight="25.0" prefWidth="314.0" />
-      <ComboBox fx:id="cbServico" layoutX="99.0" layoutY="185.0" prefHeight="25.0" prefWidth="127.0" />
+      <ComboBox fx:id="cbServico" layoutX="99.0" layoutY="185.0" onAction="#cbServicoSelected" prefHeight="25.0" prefWidth="127.0" />
    </children>
 </AnchorPane>

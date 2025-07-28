@@ -16,6 +16,7 @@
     </properties>
 
     <dependencies>
+
     
     <!-- JAVAFX -->
         <dependency>
@@ -51,6 +52,7 @@
             <artifactId>jasperreports</artifactId>
             <version>7.0.1</version>
         </dependency>
+
     <!-- JUnit 5 -->   
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -58,10 +60,22 @@
             <version>5.11.0-M2</version>
             <scope>test</scope>
         </dependency>
-    
+
     </dependencies>
 
+
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/*.jrxml</include>
+                    <include>**/*.jasper</include>
+                    <include>**/*.properties</include>
+                </includes>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -110,5 +124,6 @@
         </plugins>
     </build>
     <name>prj-sistema-vendas-javafx-parte1</name>
+
 
 </project>

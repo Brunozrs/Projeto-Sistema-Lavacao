@@ -41,9 +41,7 @@ public class    Servico {
         return valor;
     }
 
-    public void setValor(double valor) {
-        this.valor = valor;
-    }
+    public void setValor(double valor) {this.valor = valor;}
 
     public int getPontos() {
         return pontos;
@@ -52,6 +50,7 @@ public class    Servico {
     public void setPontos(int pontos) {
         this.pontos = pontos;
     }
+
     public ECategoria getCategoria() {
         return categoria;
     }

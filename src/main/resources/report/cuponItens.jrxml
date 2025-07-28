@@ -1,0 +1,45 @@
+<!-- Created with Jaspersoft Studio version 7.0.3.final using JasperReports Library version 7.0.3-41034ca841d452f3305ba55b9042260aaa1ab5dd  -->
+<jasperReport name="cuponItens" language="java" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="f410cf8d-bdcc-4fde-bbf2-d5904e3757bc">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="CupomDb"/>
+	<parameter name="os_numero" class="java.lang.Integer"/>
+	<query language="SQL"><![CDATA[SELECT 
+  s.descricao AS servico_descricao,
+  i.valor_do_servico AS item_valor
+FROM itemOS i
+JOIN servico s ON i.id_servico = s.id
+WHERE i.id_os = $P{os_numero}]]></query>
+	<field name="servico_descricao" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="descricao"/>
+		<property name="com.jaspersoft.studio.field.label" value="servico_descricao"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="servico"/>
+	</field>
+	<field name="item_valor" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="valor_do_servico"/>
+		<property name="com.jaspersoft.studio.field.label" value="item_valor"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="itemos"/>
+	</field>
+	<background splitType="Stretch"/>
+	<title splitType="Stretch"/>
+	<pageHeader splitType="Stretch"/>
+	<columnHeader splitType="Stretch"/>
+	<detail>
+		<band height="19" splitType="Stretch">
+			<element kind="textField" uuid="2d45b314-128a-45c7-b476-eb89d649f1f2" x="60" y="1" width="100" height="18">
+				<expression><![CDATA[$F{servico_descricao}]]></expression>
+			</element>
+			<element kind="staticText" uuid="bbb969f0-9c8b-45b2-a9a4-8ef275796c2c" x="20" y="1" width="40" height="18" bold="true">
+				<text><![CDATA[Serviço:]]></text>
+			</element>
+			<element kind="textField" uuid="a5f7a0f7-3a1a-49df-9c4d-32ff692efc1c" x="200" y="1" width="100" height="18">
+				<expression><![CDATA[$F{item_valor}]]></expression>
+			</element>
+			<element kind="staticText" uuid="6ca86a87-f047-46a2-9a47-e37543170156" x="170" y="1" width="30" height="18" bold="true">
+				<text><![CDATA[Valor:]]></text>
+			</element>
+		</band>
+	</detail>
+	<columnFooter splitType="Stretch"/>
+	<pageFooter splitType="Stretch"/>
+	<summary splitType="Stretch"/>
+</jasperReport>

@@ -79,6 +79,10 @@ public class Veiculo {
         this.ordemServico = ordemServico;
     }
 
+    public boolean donoTemDireitoDesconto() {
+        return this.cliente.temDireitoDesconto();
+    }
+
     @Override
     public String toString() {
         return placa;

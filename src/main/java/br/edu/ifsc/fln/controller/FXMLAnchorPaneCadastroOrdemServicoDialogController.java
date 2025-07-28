@@ -4,7 +4,8 @@ import br.edu.ifsc.fln.model.dao.*;
 import br.edu.ifsc.fln.model.database.Database;
 import br.edu.ifsc.fln.model.database.DatabaseFactory;
 import br.edu.ifsc.fln.model.domain.*;
-        import javafx.collections.FXCollections;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -112,6 +113,7 @@ public class FXMLAnchorPaneCadastroOrdemServicoDialogController implements Initi
     //atributos para manipulação de banco de dados
     private final Database database = DatabaseFactory.getDatabase("mysql");
     private final Connection connection = database.conectar();
+    private final OrdemServicoDAO ordemServicoDAO = new OrdemServicoDAO();
     private final VeiculoDAO veiculoDAO = new VeiculoDAO();
     private final ServicoDAO servicoDAO = new ServicoDAO();
     private final ItemOSDAO itemOSDAO = new ItemOSDAO();
@@ -127,16 +129,19 @@ public class FXMLAnchorPaneCadastroOrdemServicoDialogController implements Initi
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        ordemServicoDAO.setConnection(connection);
         veiculoDAO.setConnection(connection);
         servicoDAO.setConnection(connection);
         carregarComboBoxVeiculos();
         carregarComboBoxServicos();
         carregarChoiceBoxSituacao();
         setFocusLostHandle();
-        // Procurar no objeto itemOS os valores de servico e valorServico
+        // Procurar no objeto itemOS e Servico os valores de servico
         tableColumnServico.setCellValueFactory(new PropertyValueFactory<>("servico"));
-        tableColumnValorServico.setCellValueFactory(new PropertyValueFactory<>("valorServico"));
         tableColumnObservacoesServico.setCellValueFactory(new PropertyValueFactory<>("Observacoes"));
+        tableColumnValorServico.setCellValueFactory(new PropertyValueFactory<>("valorServico"));
+
+
 
         contextMenuTableView.getItems().addAll(contextMenuItemRemoverItem);
 
@@ -149,16 +154,27 @@ public class FXMLAnchorPaneCadastroOrdemServicoDialogController implements Initi
 
     }
 
+    private int calcularPontosAcumulados() {
+        int totalPontos = 0;
+
+        // Soma os pontos de todos os itens na tabela
+        for (ItemOS item : tableViewItemsOS.getItems()) {
+            totalPontos += item.getServico().getPontos();
+        }
+
+        return totalPontos;
+    }
+
     public void carregarComboBoxVeiculos() {
         listaVeiculos = veiculoDAO.listar();
         observableListVeiculos = FXCollections.observableArrayList(listaVeiculos);
         cbVeiculo.setItems(observableListVeiculos);
     }
 
+
     public void carregarComboBoxServicos() {
         listaServicos = servicoDAO.listar();
-        observableListServicos =
-                FXCollections.observableArrayList(listaServicos);
+        observableListServicos = FXCollections.observableArrayList(listaServicos);
         cbServico.setItems(observableListServicos);
     }
 
@@ -233,9 +249,26 @@ public class FXMLAnchorPaneCadastroOrdemServicoDialogController implements Initi
             tfMarca.setText(this.ordemServico.getVeiculo().getModelo().getMarca().getNome());
             tfCategoria.setText(this.ordemServico.getVeiculo().getModelo().getCategoria().getDescricao());
             dpData.setValue(this.ordemServico.getAgenda());
+
+            // Obtém o veículo selecionado
+            Veiculo veiculoSelecionado = cbVeiculo.getSelectionModel().getSelectedItem();
+            // Verifica desconto
+            boolean temDesconto = veiculoSelecionado.getCliente().temDireitoDesconto();
+
+            if(temDesconto){
+                tfDesconto.setText("");
+            }else{
+                tfDesconto.setText(String.format("%.2f", this.ordemServico.getDesconto()));
+                tfDesconto.setDisable(true);
+            }
+
+            int pontosAcumulados = calcularPontosAcumulados();
+            ordemServico.getVeiculo().getCliente().setPontuacao(pontosAcumulados);
+
+
             observableListItemsOS = FXCollections.observableArrayList(this.ordemServico.getItemOS());
             tableViewItemsOS.setItems(observableListItemsOS);
-            tfDesconto.setText(String.format("%.2f", this.ordemServico.getDesconto()));
+
             tfValor.setText(String.format("%.2f", this.ordemServico.getTotal()));
             cbStatus.getSelectionModel().select(this.ordemServico.getStatus());
         }
@@ -244,18 +277,34 @@ public class FXMLAnchorPaneCadastroOrdemServicoDialogController implements Initi
     @FXML
     void handleBtPesquisarDados() {
 
-        if(cbVeiculo != null){
-            tfCliente.setText(cbVeiculo.getSelectionModel().getSelectedItem().getCliente().getNome());
-            tfModelo.setText(cbVeiculo.getSelectionModel().getSelectedItem().getModelo().getDescricao());
-            tfMarca.setText(cbVeiculo.getSelectionModel().getSelectedItem().getModelo().getMarca().getNome());
-            tfCategoria.setText(cbVeiculo.getSelectionModel().getSelectedItem().getModelo().getCategoria().getDescricao());
+        // Obtém o veículo selecionado
+        Veiculo veiculoSelecionado = cbVeiculo.getSelectionModel().getSelectedItem();
+
+        // Preenche os campos com os dados do veículo e cliente
+        tfCliente.setText(veiculoSelecionado.getCliente().getNome());
+        tfModelo.setText(veiculoSelecionado.getModelo().getDescricao());
+        tfMarca.setText(veiculoSelecionado.getModelo().getMarca().getNome());
+        tfCategoria.setText(veiculoSelecionado.getModelo().getCategoria().getDescricao());
+
+        // Verifica desconto
+        boolean temDesconto = veiculoSelecionado.getCliente().temDireitoDesconto();
+
+        if(temDesconto){
+            tfDesconto.setText("");
+        }else{
+            tfDesconto.setText("R$ 0.00");
+            tfDesconto.setDisable(true);
         }
     }
 
-
+    @FXML
+    void cbServicoSelected(){
+        tfValorServico.setText(String.valueOf(cbServico.getSelectionModel().getSelectedItem().getValor()));
+        tfObservacoesServico.setText(cbServico.getSelectionModel().getSelectedItem().getDescricao());
+    }
 
     @FXML
-    void handleBtAdicionar() {
+    void handleBtAdicionar() throws SQLException {
         itemOSDAO.setConnection(connection);
         ItemOS itemOS = new ItemOS(Double.parseDouble(tfValorServico.getText()),tfObservacoesServico.getText(),cbServico.getSelectionModel().getSelectedItem(),this.ordemServico);
         String sql = "INSERT INTO itemos(valor_do_servico, observacao, id_servico, id_os) VALUES(?,?,?,?)";
@@ -271,24 +320,62 @@ public class FXMLAnchorPaneCadastroOrdemServicoDialogController implements Initi
             Logger.getLogger(ItemOSDAO.class.getName()).log(Level.SEVERE, null, ex);
 
         }
-            List <ItemOS> listaItemOS = this.ordemServico.getItemOS();
-            listaItemOS.add(itemOS);
-            this.ordemServico.setItemOS(listaItemOS);
-
-            observableListItemsOS= FXCollections.observableArrayList(this.ordemServico.getItemOS());
-            tableViewItemsOS.setItems(observableListItemsOS);
 
 
+        List <ItemOS> listaItemOS = this.ordemServico.getItemOS();
+        listaItemOS.add(itemOS);
+        this.ordemServico.setItemOS(listaItemOS);
 
-            ordemServico.calcularServico();
-            tfValor.setText(String.format("%.2f", ordemServico.getTotal()));
+        observableListItemsOS= FXCollections.observableArrayList(this.ordemServico.getItemOS());
+        tableViewItemsOS.setItems(observableListItemsOS);
 
 
+        // 3. Atualiza no objeto Cliente
+        Cliente cliente = cbVeiculo.getSelectionModel().getSelectedItem().getCliente();
+        cliente.setPontuacao(cliente.getPontuacao() + itemOS.getServico().getPontos());
+
+        // 4. Persiste no banco de dados
+        ClienteDAO clienteDAO = new ClienteDAO();
+        clienteDAO.setConnection(connection);
+        clienteDAO.atualizarPontos(cliente.getId(), cliente.getPontuacao());
+
+        // Verifica desconto
+        Veiculo veiculoSelecionado = cbVeiculo.getSelectionModel().getSelectedItem();
+        boolean temDesconto = veiculoSelecionado.getCliente().temDireitoDesconto();
+
+        if(temDesconto){
+            tfDesconto.setText("");
+        }else{
+            tfDesconto.setText(String.format("%.2f", this.ordemServico.getDesconto()));
+            tfDesconto.setDisable(true);
+        }
+
+
+        ordemServico.calcularServico();
+        tfValor.setText(String.format("%.2f", ordemServico.getTotal()));
+    }
+
+    private void showPontosAlert(Cliente cliente, int pontosGanhos, int totalPontos) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Pontos Acumulados");
+        alert.setHeaderText("✔ Pontos adicionados com sucesso!");
+
+        // Cria conteúdo personalizado
+        Label mensagem = new Label(String.format(
+                "Cliente: %s\n\n" +
+                        "Pontos ganhos nesta OS: +%d\n" +
+                        "Total acumulado: %d pontos",
+                cliente.getNome(),
+                pontosGanhos,
+                totalPontos
+        ));
+
+        mensagem.setStyle("-fx-font-size: 14px; -fx-padding: 10px;");
 
     }
 
     @FXML
-    private void handleBtConfirmar() {
+    private void handleBtConfirmar() throws SQLException {
         if (validarEntradaDeDados()) {
             ordemServico.setVeiculo(cbVeiculo.getSelectionModel().getSelectedItem());
             ordemServico.setAgenda(dpData.getValue());
@@ -297,6 +384,26 @@ public class FXMLAnchorPaneCadastroOrdemServicoDialogController implements Initi
             String valorTexto = tfValor.getText().replace(",", ".");
             double valorTotal = Double.parseDouble(valorTexto);
             ordemServico.setTotal(valorTotal);
+
+            // 1. Calcula pontos totais da OS
+            int pontosOS = calcularPontosAcumulados();
+
+            // 2. Obtém o cliente associado
+            Cliente cliente = ordemServico.getVeiculo().getCliente();
+
+            // 3. Atualiza os pontos (soma os novos aos existentes)
+            int novosPontos = cliente.getPontuacao() + pontosOS;
+            cliente.setPontuacao(novosPontos);
+
+            // 4. Atualiza no banco
+            ClienteDAO clienteDAO = new ClienteDAO();
+            clienteDAO.setConnection(connection);
+            boolean sucesso = clienteDAO.atualizarPontos(cliente.getId(), novosPontos);
+
+            if (sucesso) {
+                showPontosAlert(cliente, pontosOS, novosPontos);
+            }
+
             buttonConfirmarClicked = true;
             dialogStage.close();
         }
@@ -359,37 +466,6 @@ public class FXMLAnchorPaneCadastroOrdemServicoDialogController implements Initi
         }
     }
 
-//    private String inputDialog(int value) {
-//        TextInputDialog dialog = new TextInputDialog(Integer.toString(value));
-//        dialog.setTitle("Entrada de dados.");
-//        dialog.setHeaderText("Atualização da quantidade de produtos.");
-//        dialog.setContentText("Quantidade: ");
-//
-//        // Traditional way to get the response value.
-//        Optional<String> result = dialog.showAndWait();
-//        return result.get();
-//    }
-
-    @FXML
-    private void handleContextMenuItemRemoverItem() {
-        ItemOS itemOS = tableViewItemsOS.getSelectionModel().getSelectedItem();
-        int index = tableViewItemsOS.getSelectionModel().getSelectedIndex();
-        try {
-            ordemServico.getItemOS().remove(index);
-            ordemServico.remove(itemOS);
-
-
-            ordemServico.calcularServico();
-            tfValor.setText(String.format("%.2f", ordemServico.getTotal()));
-         }
-        catch (Exception ex) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("Aviso");
-        alert.setHeaderText("Nenhum item selecionado");
-        alert.setContentText("Selecione um item para excluir.");
-        alert.showAndWait();
-        }
-    }
 
     //validar entrada de dados do cadastro
     private boolean validarEntradaDeDados() {

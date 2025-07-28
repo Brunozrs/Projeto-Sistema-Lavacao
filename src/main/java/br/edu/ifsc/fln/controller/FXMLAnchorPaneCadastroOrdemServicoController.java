@@ -25,9 +25,12 @@ import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.util.JRLoader;
 import net.sf.jasperreports.view.JasperViewer;
 
 import javax.swing.*;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -104,9 +107,24 @@ public class FXMLAnchorPaneCadastroOrdemServicoController implements Initializab
 
         carregarTableView();
 
+        tableViewOrdemDeServico.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> selecionarItemTableView(newValue));
+
         tableViewOrdemDeServico.getSelectionModel().selectedItemProperty().addListener(
-                (observable, oldValue, newValue) -> selecionarItemTableView(newValue));
+                (obs, oldSelection, newSelection) -> {
+                    if (newSelection != null) {
+                        boolean isFechada = "Fechada".equalsIgnoreCase(newSelection.getStatus().name());
+                        btAlterar.setDisable(isFechada);
+
+                        if (isFechada) {
+                            btAlterar.setTooltip(new Tooltip("Ordem Fechada - edição bloqueada"));
+                        } else {
+                            btAlterar.setTooltip(null);
+                        }
+                    }
+                });
     }
+
+
 
     public void carregarTableView() {
         tableColumnNumeroDaOrdem.setCellValueFactory(new PropertyValueFactory<>("numero"));
@@ -153,6 +171,17 @@ public class FXMLAnchorPaneCadastroOrdemServicoController implements Initializab
     @FXML
     private void handleBtAlterar(ActionEvent event) throws IOException {
         OrdemServico ordemServico = tableViewOrdemDeServico.getSelectionModel().getSelectedItem();
+
+        // Verifica se a situação é "Fechada"
+        if ("Fechada".equalsIgnoreCase(ordemServico.getStatus().name())) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Edição Bloqueada");
+            alert.setHeaderText("Ordem de Serviço Fechada");
+            alert.setContentText("Não é possível alterar uma Ordem de Serviço com situação 'Fechada'.");
+            alert.show();
+            return;
+        }
+
         if (ordemServico != null) {
             boolean buttonConfirmarClicked = showFXMLAnchorPaneCadastroOrdemServicoDialog(ordemServico);
             if (buttonConfirmarClicked) {
@@ -164,7 +193,10 @@ public class FXMLAnchorPaneCadastroOrdemServicoController implements Initializab
             alert.setContentText("Por favor, escolha um ordemServico na Tabela.");
             alert.show();
         }
+
+
     }
+
 
     @FXML
     private void handleBtExcluir(ActionEvent event) throws SQLException {
@@ -207,51 +239,57 @@ public class FXMLAnchorPaneCadastroOrdemServicoController implements Initializab
 
     @FXML
     private void handlebuttonImprimir(ActionEvent event) {
-        Long selected = tableViewOrdemDeServico.getSelectionModel().getSelectedItem().getNumero();
-
-        if (selected == null) {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Nenhuma seleção");
-            alert.setHeaderText(null);
-            alert.setContentText("Por favor, selecione uma ordem de serviço na tabela");
-            alert.showAndWait();
-            return;
-        }
-
         try {
-            // 1. Load compiled report
-            InputStream jasperStream = getClass().getResourceAsStream("/report/CupomFiscal.jasper");
+            Long selected = tableViewOrdemDeServico.getSelectionModel().getSelectedItem().getNumero();
 
-            // 2. Create parameters map
+            // 1. Obtenha os URLs dos recursos de forma absoluta
+            String mainReportPath = "/report/CupomFiscal.jasper";
+            String subreportPath = "/report/cuponItens.jasper";
+
+            URL mainReportUrl = getClass().getResource(mainReportPath);
+            URL subreportUrl = getClass().getResource(subreportPath);
+
+            // Verificação explícita dos recursos
+            if (mainReportUrl == null) {
+                throw new FileNotFoundException("Arquivo principal não encontrado: " + mainReportPath);
+            }
+            if (subreportUrl == null) {
+                throw new FileNotFoundException("Subrelatório não encontrado: " + subreportPath);
+            }
+
+            // 2. Configure os parâmetros
             Map<String, Object> params = new HashMap<>();
-            params.put("numero_os", selected); // Pass selected order number
+            params.put("numero_os", selected);
 
-            // 3. Get database connection
+            // 3. Passe o diretório dos subrelatórios como parâmetro
+            params.put("SUBREPORT_DIR", new File(mainReportUrl.toURI()).getParent() + File.separator);
+
+            // 4. Carregue os relatórios compilados
+            JasperReport mainReport = (JasperReport)JRLoader.loadObject(mainReportUrl);
+            JasperReport subreport = (JasperReport)JRLoader.loadObject(subreportUrl);
+            params.put("cuponItens.jasper", subreport);
+
+            // 5. Execute com conexão ao banco
             try (Connection conn = DatabaseFactory.getDatabase("mysql").conectar()) {
+                JasperPrint print = JasperFillManager.fillReport(mainReport, params, conn);
 
-                // 4. Fill report
-                JasperPrint print = JasperFillManager.fillReport(jasperStream, params, conn);
-
-                // 5. Show print preview
+                // 6. Exiba o resultado
                 JasperViewer viewer = new JasperViewer(print, false);
                 viewer.setTitle("Ordem de Serviço #" + selected);
                 viewer.setVisible(true);
-
-                // OR direct printing without preview:
-                // JasperPrintManager.printReport(print, true);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Erro de impressão");
-            alert.setHeaderText(null);
-            alert.setContentText("Erro ao gerar relatório: " + e.getMessage());
-            alert.showAndWait();
+            showErrorAlert("Erro ao gerar relatório", e.getMessage());
         }
     }
 
-
-
-
+    private void showErrorAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
 
 }

@@ -50,6 +50,7 @@
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
                         <Label alignment="CENTER_RIGHT" prefHeight="18.0" prefWidth="76.0" text="ID:" GridPane.halignment="RIGHT">
@@ -96,8 +97,10 @@
                         <Label fx:id="lbClienteTelefone" prefHeight="18.0" prefWidth="331.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                         <Label fx:id="lbClienteEmail" prefHeight="18.0" prefWidth="341.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                         <Label fx:id="lbClienteDataCadastro" prefHeight="18.0" prefWidth="379.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                        <Label alignment="CENTER_RIGHT" prefHeight="18.0" prefWidth="157.0" text="Tipo De Cliente:" GridPane.rowIndex="6" />
-                        <Label fx:id="lbTipoCliente" prefHeight="18.0" prefWidth="379.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                        <Label alignment="CENTER_RIGHT" prefHeight="18.0" prefWidth="157.0" text="Tipo De Cliente:" GridPane.rowIndex="7" />
+                        <Label fx:id="lbTipoCliente" prefHeight="18.0" prefWidth="379.0" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                        <Label prefHeight="17.0" prefWidth="167.0" text="                               Pontos:" GridPane.rowIndex="6" />
+                        <Label fx:id="lbPontosCliente" prefHeight="17.0" prefWidth="362.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
                      </children>
                   </GridPane>
                   <Group layoutX="120.0" layoutY="326.0" AnchorPane.bottomAnchor="20.0" AnchorPane.rightAnchor="20.0">

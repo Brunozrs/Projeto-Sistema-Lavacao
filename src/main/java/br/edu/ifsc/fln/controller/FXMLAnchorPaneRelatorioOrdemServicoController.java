@@ -46,7 +46,6 @@ import net.sf.jasperreports.view.JasperViewer;
 public class FXMLAnchorPaneRelatorioOrdemServicoController implements Initializable {
 
 
-    public TableColumn tableColumnPlaca;
     @FXML
     private TableView<OrdemServico> tableView;
     @FXML

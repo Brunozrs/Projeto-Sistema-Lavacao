@@ -4,6 +4,7 @@
  */
 package br.edu.ifsc.fln.controller;
 
+import br.edu.ifsc.fln.exception.DAOException;
 import br.edu.ifsc.fln.model.dao.ClienteDAO;
 import br.edu.ifsc.fln.model.database.Database;
 import br.edu.ifsc.fln.model.database.DatabaseFactory;
@@ -65,6 +66,9 @@ public class FXMLAnchorPaneCadastroClienteController implements Initializable {
     private Label lbClienteEmail;
 
     @FXML
+    private Label lbPontosCliente;
+
+    @FXML
     private Label lbTipoCliente;
     
     @FXML
@@ -91,10 +95,10 @@ public class FXMLAnchorPaneCadastroClienteController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         clienteDAO.setConnection(connection);
         carregarTableViewCliente();
-        
+
         tableViewClientes.getSelectionModel().selectedItemProperty().addListener(
                 (observable, oldValue, newValue) -> selecionarItemTableViewClientes(newValue));
-    }     
+    }
     
     public void carregarTableViewCliente() {
         tableColumnClienteNome.setCellValueFactory(new PropertyValueFactory<>("nome"));
@@ -113,6 +117,7 @@ public class FXMLAnchorPaneCadastroClienteController implements Initializable {
             lbClienteTelefone.setText(cliente.getCelular());
             lbClienteEmail.setText(cliente.getEmail());
             lbClienteDataCadastro.setText(cliente.getDataCadastro().toString());
+            lbPontosCliente.setText(String.valueOf(cliente.getPontuacao()));
             if(cliente instanceof PessoaFisica) {
                 lbClienteDocumento.setText(((PessoaFisica) cliente).getCpf());
                 lbTipoCliente.setText(" Pessoa Fisica");
@@ -128,6 +133,7 @@ public class FXMLAnchorPaneCadastroClienteController implements Initializable {
             lbClienteTelefone.setText("");
             lbClienteEmail.setText("");
             lbClienteDataCadastro.setText("");
+            lbPontosCliente.setText("");
         }
         
     }
@@ -139,7 +145,15 @@ public class FXMLAnchorPaneCadastroClienteController implements Initializable {
       if (cliente != null) {
             boolean btConfirmarClicked = showFXMLAnchorPaneCadastroClienteDialog(cliente);
         if (btConfirmarClicked) {
-            clienteDAO.inserir(cliente);
+            try {
+                clienteDAO.inserir(cliente);
+            }catch (DAOException e){
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Operação inválida");
+                alert.setHeaderText("Não foi possivel inserir novo cliente");
+                alert.setContentText("Ocorreu um erro ao inserir novo cliente");
+                alert.showAndWait();
+            }
             carregarTableViewCliente();
         }
       }
@@ -172,7 +186,15 @@ public class FXMLAnchorPaneCadastroClienteController implements Initializable {
         if (cliente != null) {
             boolean btConfirmarClicked = showFXMLAnchorPaneCadastroClienteDialog(cliente);
             if (btConfirmarClicked) {
-                clienteDAO.alterar(cliente);
+                try {
+                    clienteDAO.alterar(cliente);
+                }catch (DAOException e){
+                    Alert alert = new Alert(Alert.AlertType.WARNING);
+                    alert.setTitle("Operação inválida");
+                    alert.setHeaderText("Não foi possivel alterar  cliente");
+                    alert.setContentText("Ocorreu um erro ao alterar cliente");
+                    alert.showAndWait();
+                }
                 carregarTableViewCliente();
             }
         } else {
@@ -186,7 +208,15 @@ public class FXMLAnchorPaneCadastroClienteController implements Initializable {
     public void handleBtExcluir() throws IOException {
         Cliente cliente = tableViewClientes.getSelectionModel().getSelectedItem();
         if (cliente != null) {
-            clienteDAO.remover(cliente);
+            try {
+                clienteDAO.remover(cliente);
+            }catch (DAOException e){
+               Alert alert = new Alert(Alert.AlertType.WARNING);
+               alert.setTitle("Operação inválida");
+               alert.setHeaderText("Não foi possivel remover  cliente");
+               alert.setContentText("Ocorreu um erro ao remover cliente");
+               alert.showAndWait();
+            }
             carregarTableViewCliente();
         } else {
             Alert alert = new Alert(Alert.AlertType.ERROR);

@@ -19,7 +19,7 @@ public abstract class Cliente {
     protected String celular;
     protected String email;
     protected LocalDate dataCadastro;
-    //private Pontuacao pontuacao = new Pontuacao();
+    protected int pontuacao;
 
 
     public ArrayList<Veiculo> veiculos = new ArrayList();
@@ -35,7 +35,6 @@ public abstract class Cliente {
         this.celular = celular;
         this.email = email;
         this.dataCadastro = dataCadastro;
-        // this.pontuacao.setQuantidade(0);
     }
 
     public Cliente(String nome, String celular, String email, LocalDate dataCadastro) {
@@ -121,11 +120,11 @@ public abstract class Cliente {
     /**
      * @return the pontuacao
      */
-    /**
-     * public Pontuacao getPontuacao() {
-     * return pontuacao;
-     * }
-     */
+
+    public int getPontuacao() {return pontuacao;}
+
+    public void setPontuacao(int pontuacao) {this.pontuacao = pontuacao;}
+
     public void add(Veiculo v) {
         veiculos.add(v);
         v.setCliente(this);
@@ -139,6 +138,11 @@ public abstract class Cliente {
             }
 
         }
+    }
+
+    public boolean temDireitoDesconto() {
+        // Regra básica (pode ser expandida)
+        return this.pontuacao >= 100;
     }
 
     @Override

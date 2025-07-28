@@ -117,4 +117,7 @@ public class OrdemServico {
         itemOS.setOrdemServico(null);
     }
 
+    public boolean clienteTemDesconto() {
+        return this.veiculo.donoTemDireitoDesconto();
+    }
 }

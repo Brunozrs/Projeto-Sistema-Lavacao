@@ -142,6 +142,7 @@ public class OrdemServicoDAO {
         }
     }
 
+
     public List<OrdemServico> listar() {
         String sql = "SELECT * FROM ordem_de_servico";
         List<OrdemServico> retorno = new ArrayList<>();
