@@ -4,7 +4,6 @@
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="CupomDb"/>
 	<parameter name="numero_os" class="java.lang.Integer"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
-	<parameter name="cuponItens.jasper" class="net.sf.jasperreports.engine.JasperReport"/>
 	<query language="SQL"><![CDATA[SELECT 
     os.numero AS os_numero,
     os.total AS os_total,
@@ -122,7 +121,7 @@ WHERE
 			<element kind="subreport" uuid="c1cf155e-0eb7-4c04-8e49-4f8045b4bfe6" mode="Transparent" x="110" y="30" width="310" height="59">
 				<parametersMapExpression><![CDATA[$P{REPORT_PARAMETERS_MAP}]]></parametersMapExpression>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
-				<expression><![CDATA["cuponItens.jasper"]]></expression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "cuponItens.jasper"]]></subreportExpression>
 				<parameter name="os_numero">
 					<expression><![CDATA[$P{numero_os}]]></expression>
 				</parameter>

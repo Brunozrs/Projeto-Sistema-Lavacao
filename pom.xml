@@ -68,11 +68,20 @@
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+                <includes>
+                    <include>**/*.jasper</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
                 <filtering>true</filtering>
                 <includes>
                     <include>**/*.jrxml</include>
-                    <include>**/*.jasper</include>
                     <include>**/*.properties</include>
+                    <include>**/*.fxml</include>
+                    <include>**/*.jpeg</include>
+                    <include>**/*.png</include>
                 </includes>
             </resource>
         </resources>
