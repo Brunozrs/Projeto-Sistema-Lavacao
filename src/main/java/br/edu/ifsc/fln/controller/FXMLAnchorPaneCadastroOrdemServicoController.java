@@ -241,39 +241,28 @@ public class FXMLAnchorPaneCadastroOrdemServicoController implements Initializab
     private void handlebuttonImprimir(ActionEvent event) {
         try {
             Long selected = tableViewOrdemDeServico.getSelectionModel().getSelectedItem().getNumero();
+            Integer intValue = selected.intValue();
 
-            // 1. Obtenha os URLs dos recursos de forma absoluta
             String mainReportPath = "/report/CupomFiscal.jasper";
             String subreportPath = "/report/cuponItens.jasper";
 
             URL mainReportUrl = getClass().getResource(mainReportPath);
             URL subreportUrl = getClass().getResource(subreportPath);
 
-            // Verificação explícita dos recursos
-            if (mainReportUrl == null) {
-                throw new FileNotFoundException("Arquivo principal não encontrado: " + mainReportPath);
-            }
-            if (subreportUrl == null) {
-                throw new FileNotFoundException("Subrelatório não encontrado: " + subreportPath);
-            }
+            if (mainReportUrl == null) throw new FileNotFoundException("Relatório não encontrado: " + mainReportPath);
+            if (subreportUrl == null) throw new FileNotFoundException("Subrelatório não encontrado: " + subreportPath);
 
-            // 2. Configure os parâmetros
             Map<String, Object> params = new HashMap<>();
-            params.put("numero_os", selected);
+            params.put("numero_os",  intValue);
 
-            // 3. Passe o diretório dos subrelatórios como parâmetro
-            params.put("SUBREPORT_DIR", new File(mainReportUrl.toURI()).getParent() + File.separator);
+            params.put("SUBREPORT_DIR", getClass().getResource("/report/").toString());
 
-            // 4. Carregue os relatórios compilados
-            JasperReport mainReport = (JasperReport)JRLoader.loadObject(mainReportUrl);
-            JasperReport subreport = (JasperReport)JRLoader.loadObject(subreportUrl);
+            JasperReport mainReport = (JasperReport) JRLoader.loadObject(mainReportUrl);
+            JasperReport subreport = (JasperReport) JRLoader.loadObject(subreportUrl);
             params.put("cuponItens.jasper", subreport);
 
-            // 5. Execute com conexão ao banco
             try (Connection conn = DatabaseFactory.getDatabase("mysql").conectar()) {
                 JasperPrint print = JasperFillManager.fillReport(mainReport, params, conn);
-
-                // 6. Exiba o resultado
                 JasperViewer viewer = new JasperViewer(print, false);
                 viewer.setTitle("Ordem de Serviço #" + selected);
                 viewer.setVisible(true);

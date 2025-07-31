@@ -83,7 +83,7 @@ public class ModeloDAO {
     }
 
     public List<Modelo> listar() {
-        String sql = "SELECT * FROM MODELO m JOIN motor mo ON m.id = mo.id_modelo";
+        String sql = "SELECT * FROM modelo m JOIN motor mo ON m.id = mo.id_modelo";
         List<Modelo> retorno = new ArrayList<>();
         try {
             PreparedStatement stmt = connection.prepareStatement(sql);

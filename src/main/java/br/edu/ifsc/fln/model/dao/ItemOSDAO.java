@@ -24,7 +24,7 @@ public class ItemOSDAO {
     }
 
     public boolean inserir(ItemOS itemOS) {
-        String sql = "INSERT INTO itemos(valor_do_servico, observacao, id_servico, id_os) VALUES(?,?,?,?)";
+        String sql = "INSERT INTO itemOS(valor_do_servico, observacao, id_servico, id_os) VALUES(?,?,?,?)";
         try {
             PreparedStatement stmt = connection.prepareStatement(sql);
             stmt.setDouble(1, itemOS.getValorServico());
@@ -45,7 +45,7 @@ public class ItemOSDAO {
 
     //Precisa desse remove? Ja possui o delete on cascade
     public boolean remover(ItemOS itemOS) {
-        String sql = "DELETE FROM itemos WHERE id=?";
+        String sql = "DELETE FROM itemOS WHERE id=?";
         try {
             PreparedStatement stmt = connection.prepareStatement(sql);
             stmt.setInt(1, itemOS.getId());
@@ -58,7 +58,7 @@ public class ItemOSDAO {
     }
 
     public List<ItemOS> listar() {
-        String sql = "SELECT * FROM itemos";
+        String sql = "SELECT * FROM itemOS";
         List<ItemOS> retorno = new ArrayList<>();
         try {
             PreparedStatement stmt = connection.prepareStatement(sql);
@@ -95,7 +95,7 @@ public class ItemOSDAO {
     }
 
     public List<ItemOS> listarPorOrdem(OrdemServico ordemServico) {
-        String sql = "SELECT * FROM itemos WHERE id_os=?";
+        String sql = "SELECT * FROM itemOS WHERE id_os=?";
         List<ItemOS> retorno = new ArrayList<>();
         try {
             PreparedStatement stmt = connection.prepareStatement(sql);
@@ -130,7 +130,7 @@ public class ItemOSDAO {
     }
 
     public ItemOS buscar(ItemOS itemOS) {
-        String sql = "SELECT * FROM itemos WHERE id=?";
+        String sql = "SELECT * FROM itemOS WHERE id=?";
         ItemOS retorno = new ItemOS();
         try {
             PreparedStatement stmt = connection.prepareStatement(sql);

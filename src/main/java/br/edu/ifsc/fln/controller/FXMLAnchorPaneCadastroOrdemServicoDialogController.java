@@ -306,21 +306,7 @@ public class FXMLAnchorPaneCadastroOrdemServicoDialogController implements Initi
     @FXML
     void handleBtAdicionar() throws SQLException {
         itemOSDAO.setConnection(connection);
-        ItemOS itemOS = new ItemOS(Double.parseDouble(tfValorServico.getText()),tfObservacoesServico.getText(),cbServico.getSelectionModel().getSelectedItem(),this.ordemServico);
-        String sql = "INSERT INTO itemos(valor_do_servico, observacao, id_servico, id_os) VALUES(?,?,?,?)";
-        try {
-            PreparedStatement stmt = connection.prepareStatement(sql);
-            stmt.setDouble(1, itemOS.getValorServico());
-            stmt.setString(2, itemOS.getObservacoes());
-            stmt.setInt(3, itemOS.getServico().getId());
-            stmt.setLong(4, itemOS.getOrdemServico().getNumero());
-            stmt.execute();
-
-        } catch (SQLException ex) {
-            Logger.getLogger(ItemOSDAO.class.getName()).log(Level.SEVERE, null, ex);
-
-        }
-
+        ItemOS itemOS = new ItemOS(Double.parseDouble(tfValorServico.getText()),tfObservacoesServico.getText(),cbServico.getSelectionModel().getSelectedItem(), null);
 
         List <ItemOS> listaItemOS = this.ordemServico.getItemOS();
         listaItemOS.add(itemOS);
