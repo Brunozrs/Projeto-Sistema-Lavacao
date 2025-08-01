@@ -227,8 +227,12 @@ public class FXMLAnchorPaneCadastroClienteController implements Initializable {
 
     private boolean showFXMLAnchorPaneCadastroClienteDialog(Cliente cliente) throws IOException {
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(FXMLAnchorPaneCadastroClienteController.class.getResource("/view/FXMLAnchorPaneCadastroClienteDialog.fxml"));
+        //  verifica se cliente é pessoa fisica (check ternário )
+        String tfDialog = cliente instanceof PessoaFisica ? "/view/FXMLAnchorPaneCadastroClientePFDialog.fxml": "view/FXMLAnchorPaneCadastroClientePJDialog.fxml";
+        // insere o conteudo selecionado no loader
+        loader.setLocation(FXMLAnchorPaneCadastroClienteController.class.getResource(tfDialog));
         AnchorPane page = (AnchorPane) loader.load();
+
 
         //criação de um estágio de diálogo (StageDialog)
         Stage dialogStage = new Stage();
@@ -236,7 +240,7 @@ public class FXMLAnchorPaneCadastroClienteController implements Initializable {
         Scene scene = new Scene(page);
         dialogStage.setScene(scene);
 
-        //enviando o obejto cliente para o controller
+        //enviando o objeto cliente para o controller
         FXMLAnchorPaneCadastroClienteDialogController controller = loader.getController();
         controller.setDialogStage(dialogStage);
         controller.setCliente(cliente);
@@ -245,5 +249,8 @@ public class FXMLAnchorPaneCadastroClienteController implements Initializable {
         dialogStage.showAndWait();
 
         return controller.isBtConfirmarClicked();
+
+
+
     }
 }
