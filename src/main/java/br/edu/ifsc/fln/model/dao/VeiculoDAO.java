@@ -104,6 +104,22 @@ public class VeiculoDAO {
         return retorno;
     }
 
+    public Veiculo buscarPlaca(String placa) {
+        String sql = "SELECT * FROM veiculo WHERE placa = ?";
+        Veiculo retorno = new Veiculo();
+        try {
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setString(1, placa);
+            ResultSet resultado = stmt.executeQuery();
+            if (resultado.next()) {
+                retorno = populateVO(resultado);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(VeiculoDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return retorno;
+    }
+
 
     private Veiculo populateVO(ResultSet rs) throws SQLException {
         Veiculo veiculo = new Veiculo();

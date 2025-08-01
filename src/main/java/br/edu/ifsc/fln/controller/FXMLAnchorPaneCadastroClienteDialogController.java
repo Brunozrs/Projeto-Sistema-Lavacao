@@ -16,6 +16,8 @@ import javafx.stage.Stage;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.Date;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -37,7 +39,10 @@ public class FXMLAnchorPaneCadastroClienteDialogController implements Initializa
 
 
     @FXML
-    private TextField tfCPFouCNPJ;
+    private TextField tfCPF;
+
+    @FXML
+    private TextField tfCNPJ;
 
     @FXML
     private TextField tfCelular;
@@ -46,10 +51,13 @@ public class FXMLAnchorPaneCadastroClienteDialogController implements Initializa
     private DatePicker dpCadastro;
 
     @FXML
+    private DatePicker dpDataNasc;
+
+    @FXML
     private TextField tfEmail;
 
     @FXML
-    private TextField tfIEouDataNasc;
+    private TextField tfIE;
 
     @FXML
     private TextField tfNome;
@@ -99,12 +107,14 @@ public class FXMLAnchorPaneCadastroClienteDialogController implements Initializa
             this.dpCadastro.setValue(this.cliente.getDataCadastro());
             this.gbTipo.setDisable(true);
             if (cliente instanceof PessoaFisica) {
-                tfIEouDataNasc.setDisable(false);
-                tfCPFouCNPJ.setText(((PessoaFisica) this.cliente).getCpf());
-                tfIEouDataNasc.setText(((PessoaFisica) this.cliente).getDataNascimento());
+                dpDataNasc.setDisable(false);
+                tfCPF.setText(((PessoaFisica) this.cliente).getCpf());
+                Date date = Date.valueOf(((PessoaFisica) this.cliente).getDataNascimento());
+                LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                dpDataNasc.setValue(localDate);
             } else {
-                tfCPFouCNPJ.setText(((PessoaJuridica) this.cliente).getCnpj());
-                tfIEouDataNasc.setText(((PessoaJuridica) this.cliente).getInscricaoEstadual());
+                tfCNPJ.setText(((PessoaJuridica) this.cliente).getCnpj());
+                tfIE.setText(((PessoaJuridica) this.cliente).getInscricaoEstadual());
             }
         }
         this.tfNome.requestFocus();
@@ -118,11 +128,13 @@ public class FXMLAnchorPaneCadastroClienteDialogController implements Initializa
             cliente.setEmail(tfEmail.getText());
             cliente.setDataCadastro(dpCadastro.getValue());
             if (cliente instanceof PessoaFisica) {
-                ((PessoaFisica) cliente).setCpf(tfCPFouCNPJ.getText());
-                ((PessoaFisica) cliente).setDataNascimento(tfIEouDataNasc.getText());
+                ((PessoaFisica) cliente).setCpf(tfCPF.getText());
+                Date date = Date.valueOf(((PessoaFisica) this.cliente).getDataNascimento());
+                LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                dpDataNasc.setValue(localDate);
             } else {
-                ((PessoaJuridica) cliente).setCnpj(tfCPFouCNPJ.getText());
-                ((PessoaJuridica) cliente).setInscricaoEstadual(tfIEouDataNasc.getText());
+                ((PessoaJuridica) cliente).setCnpj(tfCNPJ.getText());
+                ((PessoaJuridica) cliente).setInscricaoEstadual(tfIE.getText());
             }
             btConfirmarClicked = true;
             dialogStage.close();
