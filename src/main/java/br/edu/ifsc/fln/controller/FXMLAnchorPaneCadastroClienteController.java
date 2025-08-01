@@ -228,7 +228,7 @@ public class FXMLAnchorPaneCadastroClienteController implements Initializable {
     private boolean showFXMLAnchorPaneCadastroClienteDialog(Cliente cliente) throws IOException {
         FXMLLoader loader = new FXMLLoader();
         //  verifica se cliente é pessoa fisica (check ternário )
-        String tfDialog = cliente instanceof PessoaFisica ? "/view/FXMLAnchorPaneCadastroClientePFDialog.fxml": "view/FXMLAnchorPaneCadastroClientePJDialog.fxml";
+        String tfDialog = cliente instanceof PessoaFisica ? "/view/FXMLAnchorPaneCadastroClientePFDialog.fxml": "/view/FXMLAnchorPaneCadastroClientePJDialog.fxml";
         // insere o conteudo selecionado no loader
         loader.setLocation(FXMLAnchorPaneCadastroClienteController.class.getResource(tfDialog));
         AnchorPane page = (AnchorPane) loader.load();

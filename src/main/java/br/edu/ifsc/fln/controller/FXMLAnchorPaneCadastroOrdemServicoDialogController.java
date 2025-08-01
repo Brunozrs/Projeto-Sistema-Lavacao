@@ -61,7 +61,7 @@ public class FXMLAnchorPaneCadastroOrdemServicoDialogController implements Initi
     private ChoiceBox<EStatus> cbStatus;
 
     @FXML
-    private ComboBox<Veiculo> cbVeiculo;
+    private TextField tfVeiculoPlaca;
 
     @FXML
     private DatePicker dpData;
@@ -117,6 +117,7 @@ public class FXMLAnchorPaneCadastroOrdemServicoDialogController implements Initi
     private final VeiculoDAO veiculoDAO = new VeiculoDAO();
     private final ServicoDAO servicoDAO = new ServicoDAO();
     private final ItemOSDAO itemOSDAO = new ItemOSDAO();
+    private Veiculo veiculo;
 
 
     private Stage dialogStage;
@@ -132,7 +133,6 @@ public class FXMLAnchorPaneCadastroOrdemServicoDialogController implements Initi
         ordemServicoDAO.setConnection(connection);
         veiculoDAO.setConnection(connection);
         servicoDAO.setConnection(connection);
-        carregarComboBoxVeiculos();
         carregarComboBoxServicos();
         carregarChoiceBoxSituacao();
         setFocusLostHandle();
@@ -163,12 +163,6 @@ public class FXMLAnchorPaneCadastroOrdemServicoDialogController implements Initi
         }
 
         return totalPontos;
-    }
-
-    public void carregarComboBoxVeiculos() {
-        listaVeiculos = veiculoDAO.listar();
-        observableListVeiculos = FXCollections.observableArrayList(listaVeiculos);
-        cbVeiculo.setItems(observableListVeiculos);
     }
 
 
@@ -243,7 +237,8 @@ public class FXMLAnchorPaneCadastroOrdemServicoDialogController implements Initi
     public void setOrdemServico(OrdemServico ordemServico) {
         this.ordemServico = ordemServico;
         if (ordemServico.getNumero() != 0) {
-            cbVeiculo.getSelectionModel().select(this.ordemServico.getVeiculo());
+            veiculo = this.ordemServico.getVeiculo();
+            tfVeiculoPlaca.setText(this.ordemServico.getVeiculo().getPlaca());
             tfCliente.setText(this.ordemServico.getVeiculo().getCliente().getNome());
             tfModelo.setText(this.ordemServico.getVeiculo().getModelo().getDescricao());
             tfMarca.setText(this.ordemServico.getVeiculo().getModelo().getMarca().getNome());
@@ -251,9 +246,9 @@ public class FXMLAnchorPaneCadastroOrdemServicoDialogController implements Initi
             dpData.setValue(this.ordemServico.getAgenda());
 
             // Obtém o veículo selecionado
-            Veiculo veiculoSelecionado = cbVeiculo.getSelectionModel().getSelectedItem();
+
             // Verifica desconto
-            boolean temDesconto = veiculoSelecionado.getCliente().temDireitoDesconto();
+            boolean temDesconto = veiculo.getCliente().temDireitoDesconto();
 
             if(temDesconto){
                 tfDesconto.setText("");
@@ -278,7 +273,8 @@ public class FXMLAnchorPaneCadastroOrdemServicoDialogController implements Initi
     void handleBtPesquisarDados() {
 
         // Obtém o veículo selecionado
-        Veiculo veiculoSelecionado = cbVeiculo.getSelectionModel().getSelectedItem();
+         Veiculo veiculoSelecionado = veiculoDAO.buscarPlaca(tfVeiculoPlaca.getText());
+          veiculo = veiculoSelecionado;
 
         // Preenche os campos com os dados do veículo e cliente
         tfCliente.setText(veiculoSelecionado.getCliente().getNome());
@@ -305,6 +301,7 @@ public class FXMLAnchorPaneCadastroOrdemServicoDialogController implements Initi
 
     @FXML
     void handleBtAdicionar() throws SQLException {
+
         itemOSDAO.setConnection(connection);
         ItemOS itemOS = new ItemOS(Double.parseDouble(tfValorServico.getText()),tfObservacoesServico.getText(),cbServico.getSelectionModel().getSelectedItem(), null);
 
@@ -317,7 +314,7 @@ public class FXMLAnchorPaneCadastroOrdemServicoDialogController implements Initi
 
 
         // 3. Atualiza no objeto Cliente
-        Cliente cliente = cbVeiculo.getSelectionModel().getSelectedItem().getCliente();
+        Cliente cliente = veiculo.getCliente();
         cliente.setPontuacao(cliente.getPontuacao() + itemOS.getServico().getPontos());
 
         // 4. Persiste no banco de dados
@@ -326,8 +323,8 @@ public class FXMLAnchorPaneCadastroOrdemServicoDialogController implements Initi
         clienteDAO.atualizarPontos(cliente.getId(), cliente.getPontuacao());
 
         // Verifica desconto
-        Veiculo veiculoSelecionado = cbVeiculo.getSelectionModel().getSelectedItem();
-        boolean temDesconto = veiculoSelecionado.getCliente().temDireitoDesconto();
+
+        boolean temDesconto = veiculo.getCliente().temDireitoDesconto();
 
         if(temDesconto){
             tfDesconto.setText("");
@@ -363,7 +360,7 @@ public class FXMLAnchorPaneCadastroOrdemServicoDialogController implements Initi
     @FXML
     private void handleBtConfirmar() throws SQLException {
         if (validarEntradaDeDados()) {
-            ordemServico.setVeiculo(cbVeiculo.getSelectionModel().getSelectedItem());
+            ordemServico.setVeiculo(veiculo);
             ordemServico.setAgenda(dpData.getValue());
             ordemServico.setStatus(cbStatus.getSelectionModel().getSelectedItem());
             ordemServico.setDesconto(Double.parseDouble(tfDesconto.getText()));
@@ -457,7 +454,7 @@ public class FXMLAnchorPaneCadastroOrdemServicoDialogController implements Initi
     private boolean validarEntradaDeDados() {
         String errorMessage = "";
 
-        if (cbVeiculo.getSelectionModel().getSelectedItem() == null) {
+        if (veiculo == null) {
             errorMessage += "Veiculo inválido!\n";
         }
 
